@@ -1,0 +1,26 @@
+{
+  "author": "William Kimball",
+  "dependencies": [
+    { "name": "puppetlabs/stdlib", "version_requirement": "4.x" }
+  ],
+  "license": "APLv2",
+  "name": "wkimball-dovecot",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": ["6", "7"]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": ["6", "7"]
+    }
+  ],
+  "project_page": "https://bitbucket.org/kimballstuff/wkimball-dovecot/",
+  "requirements": [
+    { "name": "puppet", "version_requirement": ">=5.0.0" }
+  ],
+  "source": "ssh://git@bitbucket.org:kimballstuff/wkimball-dovecot.git",
+  "summary": "Manages dovecot and its plugins",
+  "tags": [],
+  "version": "0.1.0"
+}

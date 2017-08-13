@@ -1,0 +1,130 @@
+<%
+################################################################################
+# This ERB template renders Puppet (Ruby) data as a Dovecot configuration file.
+# Hashes are rendered as Dovecot "sections", which are named blocks of key-value
+# tuples that are wrapped within a {} pair.  Arrays are simply rendered as
+# ordered key-value tuples.  All other values are rendered as simple key-value
+# tuples in whatever order they appear at run-time.  Recursion is employed to
+# enable sections-within-sections(-within-sections).
+#
+# !include* directives are written as-is with one exception:  the conf.d
+# directory is required and will always be written as a !include directive.
+# To render more than one of any directive, use an Array of it.
+################################################################################
+
+###
+# Ensures the source data contains a directive to include the conf.d directory.
+#
+# Parameters:
+# - data <Hash> The source data to scan
+#
+# Returns:
+# <Hash> The source data, with a directive that includes conf.d
+##
+def ensure_conf_d(data)
+  return '' if !data or data.empty? or !data.is_a?(Hash)
+
+  has_conf_d = false
+  data.each{|k,v|
+    # There can be an array of !include* directives
+    if k.start_with?('!include')
+      if v.kind_of?(Array)
+        v.each{|w|
+          if w.start_with('conf.d')
+            has_conf_d = true
+            break
+          end
+        }
+        break if has_conf_d
+      elsif v.start_with?('conf.d')
+        has_conf_d = true
+        break
+      end
+    end
+  }
+
+  if !has_conf_d
+    if data.has_key?('!include')
+      data['!include'] = [
+        data['!include'],
+        'conf.d/*.conf'
+      ]
+    else
+      data['!include'] = 'conf.d/*.conf'
+    end
+  end
+
+  data
+end
+
+###
+# Recursively renders the source data as a Dovecot configuration file.
+#
+# Parameters:
+# key <String> The configuration key/directive
+# value <Any> The key's value or directive's target
+# indentation <Integer> The indendatation level
+#
+# Returns:
+# <String> Rendered result
+##
+def recursive_render(key, value, indentation = 0)
+  promotion = '  ' * indentation
+  stream = ''
+
+  if value.is_a?(Hash)
+    subdent = indentation + 1
+    stream << "#{promotion}#{key} {\n"
+    value.each{|k,v| stream << recursive_render(k, v, subdent) }
+    stream << "#{promotion}}\n"
+  elsif value.kind_of?(Array)
+    value.each{|v| stream << recursive_render(key, v, indentation) }
+  else
+    # Directives (prefixed with !) have no =
+    if key.start_with?('!')
+      stream << "#{promotion}#{key} #{value.to_s}\n"
+    else
+      # Dovecot example files don't exhibit whitespace after = for empty values
+      write_value = value.to_s
+      if 0 < write_value.length
+        stream << "#{promotion}#{key} = #{value.to_s}\n"
+      else
+        stream << "#{promotion}#{key} =\n"
+      end
+    end
+  end
+
+  stream
+end
+
+###
+# Renders source data as a Dovecot configuration file.
+#
+# Parameters:
+# - data <Hash> The configuration data to render
+#
+# Returns:
+# <String> Rendered result
+##
+def render(data)
+  return '# No data to render' if !data or data.empty? or !data.is_a?(Hash)
+  stream = ''
+  data.each{|k,v|
+    stream = stream << recursive_render(k, v)
+  }
+  stream
+end
+-%>
+################################################################################
+#                     THIS FILE IS UNDER PUPPET CONTROL!                       #
+################################################################################
+<%=
+  # The master config file won't be set via @config and requires !include conf.d
+  data = @config
+  if data.nil?
+    data = scope['dovecot::master_config'] if data.nil?
+    render(ensure_conf_d(data))
+  else
+    render(data)
+  end
+-%>

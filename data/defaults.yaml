@@ -1,0 +1,202 @@
+---
+################################################################################
+# Default arguments for this Puppet module.
+################################################################################
+# Define a reusable hash alias for deep merge options
+deep_merge: &deep_merge
+  merge:
+    strategy: deep
+    knockout_prefix: '--'
+    merge_hash_arrays: true
+
+lookup_options:
+  dovecot::config_file_path_attributes:
+    <<: *deep_merge
+  dovecot::config_file_defaults:
+    <<: *deep_merge
+  dovecot::config_files:
+    <<: *deep_merge
+
+# Ensure the primary package is at least installed
+dovecot::package_ensure: present
+dovecot::package_name: dovecot
+
+# Ensure the service is enabled and running
+dovecot::service_enable: true
+dovecot::service_ensure: running
+dovecot::service_managed: true
+dovecot::service_name: dovecot
+
+# Default location and treatment of config files
+dovecot::config_file_path: /etc/dovecot
+dovecot::purge_config_file_path: true
+dovecot::config_file_path_attributes:
+  owner: root
+  group: root
+  mode: '0755'
+dovecot::config_file_attributes:
+  owner: root
+  group: root
+  mode: '0644'
+
+# Default (vendor) configuration
+dovecot::master_config:
+  dict: {}
+  '!include': 'conf.d/*.conf'
+  '!include_try': local.conf
+
+dovecot::config_files:
+  10-auth.conf:
+    auth_mechanisms: plain
+    '!include': auth-system.conf.ext
+
+  10-director.conf:
+    'service director':
+      'unix_listener login/director': {}
+      'fifo_listener login/proxy-notify': {}
+      'unix_listener director-userdb': {}
+      inet_listener: {}
+    'service imap-login': {}
+    'service pop3-login': {}
+    'protocol lmtp': {}
+
+  10-logging.conf:
+    plugin: {}
+
+  10-mail.conf:
+    'namespace inbox':
+      inbox: 'yes'
+    first_valid_uid: 1000
+    mbox_write_locks: fcntl
+
+  10-master.conf:
+    'service imap-login':
+      'inet_listener imap': {}
+      'inet_listener imaps': {}
+    'service pop3-login':
+      'inet_listener pop3': {}
+      'inet_listener pop3s': {}
+    'service lmtp':
+      'unix_listener lmtp': {}
+    'service imap': {}
+    'service pop3': {}
+    'service auth':
+      'unix_listener auth-userdb': {}
+    'service auth-worker': {}
+    'service dict':
+      'unix_listener dict': {}
+
+  10-ssl.conf:
+    ssl: required
+    ssl_cert: </etc/pki/dovecot/certs/dovecot.pem
+    ssl_key: </etc/pki/dovecot/private/dovecot.pem
+
+  15-lda.conf:
+    'protocol lda': {}
+
+  15-mailboxes.conf:
+    'namespace inbox':
+      'mailbox Drafts':
+        special_use: \Drafts
+      'mailbox Junk':
+        special_use: \Junk
+      'mailbox Trash':
+        special_use: \Trash
+      'mailbox Sent':
+        special_use: \Sent
+      'mailbox "Sent Messages"':
+        special_use: \Sent
+
+  20-imap.conf:
+    'protocol imap': {}
+
+  20-lmtp.conf:
+    'protocol lmtp': {}
+
+  20-pop3.conf:
+    'protocol pop3': {}
+
+  90-acl.conf:
+    plugin:
+      - {}
+      - {}
+
+  90-plugin.conf:
+    plugin: {}
+
+  90-quota.conf:
+    plugin:
+      - {}
+      - {}
+      - {}
+      - {}
+
+  auth-checkpassword.conf.ext:
+    passdb:
+      driver: checkpassword
+      args: /usr/bin/checkpassword
+    userdb:
+      driver: prefetch
+
+  auth-deny.conf.ext:
+    passdb:
+      driver: passwd-file
+      deny: 'yes'
+      args: "%{lookup('dovecot::config_file_path')}/deny-users"
+
+  auth-dict.conf.ext:
+    passdb:
+      driver: dict
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-dict-auth.conf.ext"
+    userdb:
+      driver: dict
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-dict-auth.conf.ext"
+
+  auth-ldap.conf.ext:
+    passdb:
+      driver: ldap
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-ldap.conf.ext"
+    userdb:
+      driver: ldap
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-ldap.conf.ext"
+
+  auth-master.conf.ext:
+    passdb:
+      driver: passwd-file
+      master: 'yes'
+      args: "%{lookup('dovecot::config_file_path')}/master-users"
+      pass: 'yes'
+
+  auth-passwdfile.conf.ext:
+    passdb:
+      driver: passwd-file
+      args: "scheme=CRYPT username_format=%u %{lookup('dovecot::config_file_path')}/users"
+    userdb:
+      driver: passwd-file
+      args: "username_format=%u %{lookup('dovecot::config_file_path')}/users"
+
+  auth-sql.conf.ext:
+    passdb:
+      driver: sql
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-sql.conf.ext"
+    userdb:
+      driver: sql
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-sql.conf.ext"
+
+  auth-static.conf.ext: {}
+  
+  auth-system.conf.ext:
+    passdb:
+      driver: pam
+    userdb:
+      driver: passwd
+
+  auth-vpopmail.conf.ext:
+    passdb:
+      driver: vpopmail
+      args: ''
+    userdb:
+      driver: vpopmail
+      args: 'quota_template=quota_rule=*:backend=%q'
+
+# vim: tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai
