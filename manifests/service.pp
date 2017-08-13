@@ -20,7 +20,7 @@ class dovecot::service {
     }
 
     # Ensure that changes to plugins also trigger service restarts
-    File <| tag == 'dovecot-plugin' |> ~> Service['dovecot']
+    Package <| tag == 'dovecot-plugin' |> ~> Service['dovecot']
   }
 }
 # vim: tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai
