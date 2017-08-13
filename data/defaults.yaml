@@ -10,11 +10,15 @@ deep_merge: &deep_merge
     merge_hash_arrays: true
 
 lookup_options:
+  dovecot::config_file_attributes:
+    <<: *deep_merge
   dovecot::config_file_path_attributes:
     <<: *deep_merge
-  dovecot::config_file_defaults:
-    <<: *deep_merge
   dovecot::config_files:
+    <<: *deep_merge
+  dovecot::master_config:
+    <<: *deep_merge
+  dovecot::plugin_packages:
     <<: *deep_merge
 
 # Ensure the primary package is at least installed
