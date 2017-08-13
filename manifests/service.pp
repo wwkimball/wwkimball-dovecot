@@ -11,7 +11,9 @@
 #  dovecot::service_managed: true
 #
 class dovecot::service {
-  if $dovecot::service_managed {
+  if $dovecot::service_managed
+    and ! ($dovecot::package_ensure in ['absent', 'purged'])
+  {
     service { 'dovecot':
       ensure    => $dovecot::service_ensure,
       name      => $dovecot::service_name,

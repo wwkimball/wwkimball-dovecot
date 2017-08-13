@@ -21,9 +21,16 @@ class dovecot::package {
   }
 
   pick($dovecot::plugin_packages, {}).each | String $name, Hash $attrs | {
-    package {
-      default: *=> $default_plugin_attributes,;
-      $name:   *=> $attrs,;
+    if $dovecot::package_ensure in ['absent', 'purged'] {
+      package { $name:
+        ensure => $dovecot::package_ensure,
+        before => [ Package['dovecot'], ],
+      }
+    } else {
+      package {
+        default: *=> $default_plugin_attributes,;
+        $name:   *=> $attrs,;
+      }
     }
   }
 }

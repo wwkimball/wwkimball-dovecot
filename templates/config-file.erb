@@ -101,7 +101,7 @@ end
 ##
 def recursive_render(key, value, indentation = 0)
   promotion = '  ' * indentation
-  stream = ''
+  stream    = ''
 
   if value.is_a?(Hash)
     subdent = indentation + 1
@@ -154,8 +154,6 @@ end
 <%=
   # The master config file won't be set via @config and requires !include conf.d
   data = @config
-  if data.nil?
-    data = ensure_conf_d(scope['dovecot::master_config'])
-  end
+  data = ensure_conf_d(scope['dovecot::master_config']) if data.nil?
   render(data)
 -%>

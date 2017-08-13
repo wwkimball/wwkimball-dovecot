@@ -1,6 +1,8 @@
 # Class: dovecot
 #
-# This module fully manages dovecot
+# This module fully manages dovecot.
+#
+# @summary Fully manages dovecot.
 #
 class dovecot(
   Hash[String[4], Any]        $config_file_attributes,
