@@ -2,13 +2,18 @@
 ################################################################################
 # Default arguments for this Puppet module.
 ################################################################################
+# Define reusable values
+aliases:
+  - &knockout_prefix --
+
 # Define a reusable hash alias for deep merge options
 deep_merge: &deep_merge
   merge:
     strategy: deep
-    knockout_prefix: '--'
+    knockout_prefix: *knockout_prefix
     merge_hash_arrays: true
 
+# Hiera lookup options
 lookup_options:
   dovecot::config_file_attributes:
     <<: *deep_merge
@@ -32,16 +37,17 @@ dovecot::service_managed: true
 dovecot::service_name: dovecot
 
 # Default location and treatment of config files
-dovecot::config_file_path: /etc/dovecot
-dovecot::purge_config_file_path: true
-dovecot::config_file_path_attributes:
-  owner: root
-  group: root
-  mode: '0755'
 dovecot::config_file_attributes:
   owner: root
   group: root
   mode: '0644'
+dovecot::config_file_path: /etc/dovecot
+dovecot::config_file_path_attributes:
+  owner: root
+  group: root
+  mode: '0755'
+dovecot::config_hash_key_knockout_prefix: *knockout_prefix
+dovecot::purge_config_file_path: true
 
 # Default (vendor) configuration
 dovecot::master_config:

@@ -1,11 +1,45 @@
 # Class: dovecot::config
 #
-# This subclass manages dovecot configuration files.
+# This subclass manages all dovecot configuration files, from the primary
+# dovecot.conf to every file in the conf.d directory including custom, user-
+# created files.  All configuration files are kept on the node unless
+# $dovecot::package_ensure = purged.
 #
-# @example
+# @summary Manages all dovecot configuration files.
+#
+# @example Default configuration; all files are vendor-defaults
+#  ---
+#  classes:
+#    - dovecot
+#
+# @example Custom configuration
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::master_config:
+#    '--!include_try': --     # Remove all "soft" includes
+#  dovecot::config_files:
+#    10-logging.conf:
+#      auth_verbose: 'yes'    # Log auth failures and causes
+#    10-ssl.conf:             # Use Let's Encrypt certificates
+#      ssl_cert: </etc/letsencrypt/live/mail.%{facts.domain}/fullchain.pem
+#      ssl_key: </etc/letsencrypt/live/mail.%{facts.domain}/privkey.pem
+#
+# @example Remove dovecot but retain the configuration files
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::package_ensure: absent
+#
+# @example Remove all configuration files
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::package_ensure: purged
 #
 class dovecot::config {
   $conf_dot_d_path = "${dovecot::config_file_path}/conf.d"
+  $knockout_prefix = $dovecot::config_hash_key_knockout_prefix
 
   # Cleanly uninstall when the primary package is purged.  Allow 'absent' to
   # leave the configuration behind.

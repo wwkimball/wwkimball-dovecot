@@ -16,10 +16,8 @@
 # This rendering engine offers something that the deep_merge gem fails to:  the
 # ability to knock-out entire key-value tuples, not just array elements or hash
 # values (leaving the key behind with no value).  Simply prefix your key with
-# the standard knock-out prefix, --, and it will be entirely removed from the
-# rendered result.  At this time, there is no way to query lookup_options for
-# custom definitions of knockout_prefix, so you must use -- for this extension
-# to have any idea what you're trying to do.  Example:
+# the knock-out prefix specified by @knockout_prefix (default: --) and it will
+# be entirely removed from the rendered result.  Example:
 #   source = {:--x => ''}
 #   dest   = {:x => [1,2,3], :y => 'some value'}
 #   dest.ko_deep_merge!(source)
@@ -73,6 +71,8 @@ end
 
 ###
 # Removes keys from a source Hash for which a matching knock-out key exists.
+# @knockout_prefix controls the prefix String to use.  When nil or empty, no
+# knock-outs occur.
 #
 # Parameters:
 # data <Hash> The source data with both normal and knock-out keys.
@@ -81,9 +81,10 @@ end
 # <Hash> The culled data.
 ##
 def remove_knocked_out_keys(data)
-  knockout_keys = data.select{|k,v| k.to_s.start_with?('--') }
+  return data if @knockout_prefix.nil? or @knockout_prefix.empty?
+  knockout_keys = data.select{|k,v| k.to_s.start_with?(@knockout_prefix) }
   data.delete_if{|k,v|
-    knockout_keys.include?(k) or knockout_keys.include?("--#{k}")
+    knockout_keys.include?(k) or knockout_keys.include?("#{@knockout_prefix}#{k}")
   }
   data
 end

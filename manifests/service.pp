@@ -1,14 +1,27 @@
 # Class: dovecot::service
 #
-# This subclass manages the dovecot service.
+# This subclass optionally manages the dovecot service.  The name of the managed
+# service can be customized if necessary and service management can be entirely
+# disabled.
 #
-# @example
+# @summary Optionally manages the dovecot service by any name.
+#
+# @example Default; service is managed and always running
 #  ---
 #  classes:
 #    - dovecot
-#  dovecot::service_ensure: running
-#  dovecot::service_enable: true
-#  dovecot::service_managed: true
+#
+# @example Disable service management (e.g.:  for containers)
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::service_managed: false
+#
+# @example Stop the service
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::service_ensure: stopped
 #
 class dovecot::service {
   if $dovecot::service_managed

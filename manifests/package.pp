@@ -1,12 +1,41 @@
 # Class: dovecot::package
 #
-# This subclass manages the dovecot package.
+# This subclass manages the dovecot package and all dovecot-* plugin packages.
 #
-# @example
+# @summary Manages all dovecot packages.
+#
+# @example Default; no plugins and dovecot is present, but not updated
+#  ---
+#  classes:
+#    - dovecot
+#
+# @example Keep dovecot up-to-date
 #  ---
 #  classes:
 #    - dovecot
 #  dovecot::package_ensure: latest
+#
+# @example Install the mysql plugin (no automatic updates)
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::plugin_packages:
+#    dovecot-mysql: {}
+#
+# @example Install the mysql plugin and keep all dovecot packages up-to-date
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::package_ensure: latest
+#  dovecot::plugin_packages:
+#    dovecot-mysql:
+#      ensure: latest
+#
+# @example Uninstall everything dovecot-related
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::package_ensure: purged
 #
 class dovecot::package {
   $default_plugin_attributes = {
