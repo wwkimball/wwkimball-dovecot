@@ -1,5 +1,4 @@
 <%
-################################################################################
 # This ERB template renders Puppet (Ruby) data as a Dovecot configuration file.
 # Hashes are rendered as Dovecot "sections", which are named blocks of key-value
 # tuples that are wrapped within a {} pair.  Arrays are simply rendered as
@@ -12,27 +11,24 @@
 # directory must be included in Dovecot's master config file and will be added
 # if missing.  To render more than one of any directive, use an Array of it.
 #
-# Special Note:
-# This rendering engine offers something that the deep_merge gem fails to:  the
-# ability to knock-out entire key-value tuples, not just array elements or hash
-# values (leaving the key behind with no value).  Simply prefix your key with
-# the knock-out prefix specified by @knockout_prefix (default: --) and it will
-# be entirely removed from the rendered result.  Example:
+# @summary Renders a Hash as a Dovecot configuration file.
+#
+# @note This rendering engine offers something that the deep_merge gem fails to:
+#  the ability to knock-out entire key-value tuples, not just array elements or
+#  hash values (leaving the key behind with no value).  Simply prefix your key
+#  with the knock-out prefix specified by @knockout_prefix (default: --) and it
+#  will be entirely removed from the rendered result.
+# @example Knock-out entire keys from the rendered Hash
+#   @knockout_prefix = '--'
 #   source = {:--x => ''}
 #   dest   = {:x => [1,2,3], :y => 'some value'}
 #   dest.ko_deep_merge!(source)
 #   Results: {:y => 'some value'}   # :x is entirely removed.
-################################################################################
 
-###
-# Ensures the source data contains a directive to include the conf.d directory.
-#
-# Parameters:
-# - data <Hash> The source data to scan
-#
-# Returns:
-# <Hash> The source data, with a directive that includes conf.d
-##
+# @summary Ensures the source data contains a directive to include the conf.d
+#  directory.
+# @param data [Hash] The source data to scan
+# @return [Hash] The source data, with a directive that includes conf.d
 def ensure_conf_d(data)
   return '' if !data or data.empty? or !data.is_a?(Hash)
 
@@ -69,17 +65,14 @@ def ensure_conf_d(data)
   data
 end
 
-###
 # Removes keys from a source Hash for which a matching knock-out key exists.
 # @knockout_prefix controls the prefix String to use.  When nil or empty, no
 # knock-outs occur.
 #
-# Parameters:
-# data <Hash> The source data with both normal and knock-out keys.
-#
-# Returns:
-# <Hash> The culled data.
-##
+# @summary Removes keys from a source Hash for which a matching knock-out key
+#  exists.
+# @param data [Hash] The source data with both normal and knock-out keys.
+# @return [Hash] The culled data.
 def remove_knocked_out_keys(data)
   return data if @knockout_prefix.nil? or @knockout_prefix.empty?
   knockout_keys = data.select{|k,v| k.to_s.start_with?(@knockout_prefix) }
@@ -89,17 +82,11 @@ def remove_knocked_out_keys(data)
   data
 end
 
-###
-# Recursively renders the source data as a Dovecot configuration file.
-#
-# Parameters:
-# key <String> The configuration key/directive
-# value <Any> The key's value or directive's target
-# indentation <Integer> The indendatation level
-#
-# Returns:
-# <String> Rendered result
-##
+# @summary Recursively renders the source data as a Dovecot configuration file.
+# @param key [String] The configuration key/directive
+# @param value [Any] The key's value or directive's target
+# @param indentation [Integer] The indendatation level
+# @return [String] Rendered result
 def recursive_render(key, value, indentation = 0)
   promotion = '  ' * indentation
   stream    = ''
@@ -131,15 +118,9 @@ def recursive_render(key, value, indentation = 0)
   stream
 end
 
-###
-# Renders source data as a Dovecot configuration file.
-#
-# Parameters:
-# - data <Hash> The configuration data to render
-#
-# Returns:
-# <String> Rendered result
-##
+# @summary Renders source data as a Dovecot configuration file.
+# @param data [Hash] The configuration data to render
+# @return [String] Rendered result
 def render(data)
   return '# No data to render' if !data or data.empty? or !data.is_a?(Hash)
   stream = ''

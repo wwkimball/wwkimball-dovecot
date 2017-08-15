@@ -4,7 +4,7 @@
 #
 # @summary Manages all dovecot packages.
 #
-# @example Default; no plugins and dovecot is present, but not updated
+# @example Default; no plugins and dovecot is present but not updated
 #  ---
 #  classes:
 #    - dovecot
@@ -31,7 +31,13 @@
 #    dovecot-mysql:
 #      ensure: latest
 #
-# @example Uninstall everything dovecot-related
+# @example Uninstall everything dovecot-related but retain its configuration
+#  ---
+#  classes:
+#    - dovecot
+#  dovecot::package_ensure: absent
+#
+# @example Uninstall everything dovecot-related and destroy its configuration
 #  ---
 #  classes:
 #    - dovecot

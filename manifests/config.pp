@@ -12,10 +12,11 @@
 #  classes:
 #    - dovecot
 #
-# @example Custom configuration
+# @example Custom configuration; add Let's Encrypt certificates
 #  ---
 #  classes:
 #    - dovecot
+#    - letsencrypt  # Not documented, here
 #  dovecot::master_config:
 #    '--!include_try': --     # Remove all "soft" includes
 #  dovecot::config_files:
