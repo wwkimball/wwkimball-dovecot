@@ -1,3 +1,70 @@
-# dovecot #
+# dovecot
 
-This is the dovecot module. It provides...
+### Foreword
+
+The author of this module has long promoted a line of thinking that builds off of "Infrastructure As Code" into "Infrastructure As Data".  With Hiera and modules like this, you can express your entire enterprise infrastructure purely as data without any more code for you to write or manage (not even antiquated roles/profiles).  As such, all examples in this document and the module's in-file documentation are presented strictly as YAML.
+
+#### Table of Contents
+
+1. [Description](#description)
+2. [Setup - The basics of getting started with dovecot](#setup)
+    * [What dovecot affects](#what-dovecot-affects)
+    * [Setup requirements](#setup-requirements)
+    * [Beginning with dovecot](#beginning-with-dovecot)
+3. [Usage - Configuration options and additional functionality](#usage)
+4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+5. [Limitations - OS compatibility, etc.](#limitations)
+6. [Development - Guide for contributing to the module](#development)
+
+## Description
+
+This module was written from scratch, specifically for Puppet 5 and Hiera 5 to fully manage dovecot; nothing more and nothing less.  No assumptions are made as to what you intend to do with dovecot other than install or uninstall it and its plugins, configure it or delete its configuration files, and start/stop/enable/disable/ignore its service.
+
+Here, "fully manage" means this Puppet module:
+
+* Installs, upgrades, downgrades, version-pins, and uninstalls dovecot and its plugins.
+* Controls every line in every dovecot configuration file, both vendor- and user-supplied.
+* Optionally controls the dovecot service.
+
+This is one of a generation of Puppet modules that fully extends control over the subject resources to Hiera.  Use modules like this where you'd rather express your infrastructure as data without any further Puppet code beyond the modules that make this possible.
+
+## Setup
+
+### What dovecot affects
+
+This module specifically affects the following resources:
+
+1. The primary dovecot package, or whatever it is named for your platform.
+2. Any set of dovecot plugin packages that you define, including what to do with them.
+3. Every line of every file in the dovecot configuration directory and its conf.d subdirectory.
+4. The dovecot service -- by any name -- if you so choose.
+
+### Setup Requirements
+
+Please refer to the _dependencies_ section of the _metadata.json_ file to learn what other modules this one needs.
+
+### Beginning with dovecot 
+
+At its simplest, you can install dovecot in its vendor-supplied default state merely with:
+
+```
+---
+classes:
+  - dovecot
+```
+
+## Usage
+
+Many usage examples are provided via the source code documentation.  Refer to the Reference section to learn how to access it.
+
+## Reference
+
+This module is extensively documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings).  Install support for and run the `puppet strings` command to access the navigable documentation.
+
+## Limitations
+
+Please refer to the _operatingsystem_support_ section of [metadata.json](metadata.json) for OS compatibility.  Should you find that this module runs just fine on an operating system or version not listed, feel free to add it to the list via a Pull Request!
+
+## Development
+
+This module was written so generically that there really shouldn't be any need to change any of the Puppet code.  However, there is abundant opportunity to add more default Hiera data for operating systems that I simply don't bother with.  Should you find yourself interested in adding support for your favorite operating system -- and the existing defaults specifically do not cover it -- please feel free to open a Pull Request that adds the missing data.
