@@ -44,12 +44,9 @@ class dovecot::config {
   # Cleanly uninstall when the primary package is purged.  Allow 'absent' to
   # leave the configuration behind.
   if 'purged' == $dovecot::package_ensure {
-    file {
-      default:
-        ensure  => absent,
-        force   => true,;
-
-      $dovecot::config_file_path:;
+    file { $dovecot::config_file_path:
+      ensure  => absent,
+      force   => true,
     }
   } else {
     # Ensure the configuration directories exists
