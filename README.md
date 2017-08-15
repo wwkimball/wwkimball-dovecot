@@ -2,7 +2,7 @@
 
 ### Foreword
 
-The author of this module has long promoted a line of thinking that builds off of "Infrastructure As Code" into "Infrastructure As Data".  With Hiera and modules like this, you can express your entire enterprise infrastructure purely as data without any more code for you to write or manage (not even antiquated roles/profiles).  As such, all examples in this document and the module's in-file documentation are presented strictly as YAML.
+The author of this module has long promoted a line of thinking that builds off of **Infrastructure As Code** into **Infrastructure As Data**.  With Hiera and modules like this, you can express your entire enterprise infrastructure purely as data without any more code for you to write or manage (not even antiquated roles/profiles).  As such, all examples in this document and the module's in-file documentation are presented strictly as YAML.
 
 #### Table of Contents
 
@@ -18,7 +18,7 @@ The author of this module has long promoted a line of thinking that builds off o
 
 ## Description
 
-This module was written from scratch, specifically for Puppet 5 and Hiera 5 to fully manage dovecot; nothing more and nothing less.  No assumptions are made as to what you intend to do with dovecot other than install or uninstall it and its plugins, configure it or delete its configuration files, and start/stop/enable/disable/ignore its service.
+This module was written from scratch, specifically for Puppet 5 and Hiera 5 to fully manage dovecot; nothing more and nothing less.  No assumptions are made as to what you intend to do with dovecot other than install or uninstall it and its plugins, configure it or delete its configuration files, and -- when not ignoring it -- keep its service running or not running.
 
 Here, "fully manage" means this Puppet module:
 
@@ -34,14 +34,14 @@ This is one of a generation of Puppet modules that fully extends control over th
 
 This module specifically affects the following resources:
 
-1. The primary dovecot package, or whatever it is named for your platform.
-2. Any set of dovecot plugin packages that you define, including what to do with them.
-3. Every line of every file in the dovecot configuration directory and its conf.d subdirectory.
-4. The dovecot service -- by any name -- if you so choose.
+* The primary dovecot package, or whatever it is named for your platform.
+* Any set of dovecot plugin packages that you define, including what to do with them.
+* Every line of every file in the dovecot configuration directory and its conf.d subdirectory.
+* The dovecot service -- by any name -- if you so choose.
 
 ### Setup Requirements
 
-Please refer to the _dependencies_ section of the _metadata.json_ file to learn what other modules this one needs.
+Please refer to the *dependencies* section of [metadata.json](metadata.json) to learn what other modules this one needs, if any.
 
 ### Beginning with dovecot 
 
@@ -55,7 +55,7 @@ classes:
 
 ## Usage
 
-Many usage examples are provided via the source code documentation.  Refer to the Reference section to learn how to access it.
+Many usage examples are provided via the source code documentation.  Refer to the [Reference](#reference) section to learn how to access it.
 
 ## Reference
 
@@ -63,7 +63,7 @@ This module is extensively documented via [Puppet Strings](https://github.com/pu
 
 ## Limitations
 
-Please refer to the _operatingsystem_support_ section of [metadata.json](metadata.json) for OS compatibility.  Should you find that this module runs just fine on an operating system or version not listed, feel free to add it to the list via a Pull Request!
+Please refer to the *operatingsystem_support* section of [metadata.json](metadata.json) for OS compatibility.  This is not an exhaustive list.  You will very likely find that this module runs just fine on other operating system and version combinations, given the proper inputs.
 
 ## Development
 
