@@ -99,7 +99,7 @@ class dovecot(
   Hash[String[4], Any]        $config_file_attributes,
   String[3]                   $config_file_path,
   Hash[String[4], Any]        $config_file_path_attributes,
-  String[1]                   $config_hash_key_knockout_prefix,
+  String                      $config_hash_key_knockout_prefix,
   Hash[String[1], Any]        $master_config,
   String[1]                   $package_ensure,
   String[2]                   $package_name,
