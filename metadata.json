@@ -21,6 +21,6 @@
   ],
   "source": "https://github.com/wwkimball/wwkimball-dovecot.git",
   "summary": "Manages dovecot and its plugins",
-  "tags": [],
+  "tags": [ "dovecot", "hiera" ],
   "version": "0.1.0"
 }
