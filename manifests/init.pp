@@ -19,15 +19,15 @@
 #  hiera.yaml.
 # @param config_files Set of all configuration files found in the conf.d
 #  subdirectory of `config_file_path` and their entire contents.  The structure
-#  of this Hash is as follows:
-#    <FILENAME>:
-#      <SIMPLE_KEY>: <SIMPLE_VALUE>
-#      <REPEATING_KEY>:
-#        - <SIMPLE_VALUE>
-#        - <SIMPLE_VALUE_N>
-#      <SECTION_NAME>:
-#        Any set of <SECTION_KEY>, <REPEATING_KEY>, and nested <SECTION_NAME>
-#    ...
+#  of this Hash is as follows:<br>
+#  &nbsp; FILENAME:<br>
+#  &nbsp;&nbsp;&nbsp; SIMPLE_KEY: SIMPLE_VALUE<br>
+#  &nbsp;&nbsp;&nbsp; REPEATING_KEY:<br>
+#  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - SIMPLE_VALUE<br>
+#  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - SIMPLE_VALUE_N<br>
+#  &nbsp;&nbsp;&nbsp; SECTION_NAME:<br>
+#  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Any set of SECTION_KEY, REPEATING_KEY, and nested SECTION_NAME<br>
+#  &nbsp; ...<br>
 #  You can wholly remove any existing key and its entire value using the
 #  knock-out prefix, `config_hash_key_knockout_prefix`, even if you don't
 #  specify a lookup_options:dovecot::config_files:merge:knockout_prefix to
@@ -41,13 +41,13 @@
 #  Default is found in the data directory of this module's source and is applied
 #  per this module's hiera.yaml.
 # @param master_config Entire content of the primary dovecot.conf file expressed
-#  as a Hash with structure:
-#    <SIMPLE_KEY>: <SIMPLE_VALUE>
-#    <REPEATING_KEY>:
-#      - <SIMPLE_VALUE>
-#      - <SIMPLE_VALUE_N>
-#    <SECTION_NAME>:
-#      Any set of <SECTION_KEY>, <REPEATING_KEY>, and nested <SECTION_NAME>
+#  as a Hash with structure:<br>
+#  &nbsp; SIMPLE_KEY: SIMPLE_VALUE<br>
+#  &nbsp; REPEATING_KEY:<br>
+#  &nbsp;&nbsp;&nbsp; - SIMPLE_VALUE<br>
+#  &nbsp;&nbsp;&nbsp; - SIMPLE_VALUE_N<br>
+#  &nbsp; SECTION_NAME:<br>
+#  &nbsp;&nbsp;&nbsp; Any set of SECTION_KEY, REPEATING_KEY, and nested SECTION_NAME<br>
 #  You can wholly remove any existing key and its entire value using the
 #  knock-out prefix, `config_hash_key_knockout_prefix`, even if you don't
 #  specify a lookup_options:dovecot::master_config:merge:knockout_prefix.  The
@@ -63,14 +63,14 @@
 #  operating system and distribution.  Default is found in the data directory of
 #  this module's source and is applied per this module's hiera.yaml.
 # @param plugin_packages Set of dovecot plugin packages to manage.  The
-#  structure of this Hash is as follows ([square-bracketed] key are optional):
-#    <PACKAGE_NAME>:
-#      [ensure]:  https://docs.puppet.com/puppet/latest/types/package.html#package-attribute-ensure
-#      [provider]: https://docs.puppet.com/puppet/latest/types/package.html#package-attribute-provider
-#      [source]: https://docs.puppet.com/puppet/latest/types/package.html#package-attribute-source
-#    ...
+#  structure of this Hash is as follows ([square-bracketed] keys are optional):<br>
+#  &nbsp; PACKAGE_NAME:<br>
+#  &nbsp;&nbsp;&nbsp; [ensure]:  https://docs.puppet.com/puppet/latest/types/package.html#package-attribute-ensure <br>
+#  &nbsp;&nbsp;&nbsp; [provider]: https://docs.puppet.com/puppet/latest/types/package.html#package-attribute-provider <br>
+#  &nbsp;&nbsp;&nbsp; [source]: https://docs.puppet.com/puppet/latest/types/package.html#package-attribute-source <br>
+#  &nbsp; ...<br>
 #  No plugin packages are installed, by default.  Merely supplying a set of
-#  <PACKAGE_NAME> keys with empty Hash bodies ({}) is sufficient to ensure each
+#  PACKAGE_NAME keys with empty Hash bodies ({}) is sufficient to ensure each
 #  named plugin package is installed, though they will not be otherwise managed.
 # @param purge_config_file_path Indicates whether to ensure that only Puppet-
 #  managed configuration files exist in `config_file_path`.  Default is found in

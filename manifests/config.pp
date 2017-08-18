@@ -3,7 +3,7 @@
 # This subclass manages all dovecot configuration files, from the primary
 # dovecot.conf to every file in the conf.d directory including custom, user-
 # created files.  All configuration files are kept on the node unless
-# $dovecot::package_ensure = purged.
+# `dovecot::package_ensure: purged`.
 #
 # @summary Manages all dovecot configuration files.
 #
@@ -12,19 +12,25 @@
 #  classes:
 #    - dovecot
 #
-# @example Custom configuration; add Let's Encrypt certificates
+# @example Add Let's Encrypt certificates
 #  ---
 #  classes:
 #    - dovecot
 #    - letsencrypt  # Not documented, here
+#  dovecot::config_files:
+#    10-ssl.conf:   # Use Let's Encrypt certificates
+#      ssl_cert: </etc/letsencrypt/live/mail.%{facts.domain}/fullchain.pem
+#      ssl_key: </etc/letsencrypt/live/mail.%{facts.domain}/privkey.pem
+#
+# @example Miscellaneous customizations
+#  ---
+#  classes:
+#    - dovecot
 #  dovecot::master_config:
 #    '--!include_try': --     # Remove all "soft" includes
 #  dovecot::config_files:
 #    10-logging.conf:
 #      auth_verbose: 'yes'    # Log auth failures and causes
-#    10-ssl.conf:             # Use Let's Encrypt certificates
-#      ssl_cert: </etc/letsencrypt/live/mail.%{facts.domain}/fullchain.pem
-#      ssl_key: </etc/letsencrypt/live/mail.%{facts.domain}/privkey.pem
 #
 # @example Remove dovecot but retain the configuration files
 #  ---
@@ -62,24 +68,24 @@ class dovecot::config {
       ensure       => directory,
       *            => $dovecot::config_file_path_attributes,
     }
-  
+
     # Manage dovecot.conf
     file {
       default:
         ensure => file,
         *      => $dovecot::config_file_attributes,;
-  
+
       "${dovecot::config_file_path}/dovecot.conf":
         content => template("${module_name}/config-file.erb"),;
     }
-  
+
     # Manage all auxilliary configuration files
     pick($dovecot::config_files, {}).each | String $file, Hash $config, | {
       file {
         default:
           ensure => file,
           *      => $dovecot::config_file_attributes,;
-    
+
         "${conf_dot_d_path}/${file}":
           content => template("${module_name}/config-file.erb"),;
       }
