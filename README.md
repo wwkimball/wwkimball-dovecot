@@ -43,7 +43,7 @@ This module specifically affects the following resources:
 
 Please refer to the *dependencies* section of [metadata.json](metadata.json) to learn what other modules this one needs, if any.
 
-### Beginning with dovecot 
+### Beginning with dovecot
 
 At its simplest, you can install dovecot in its vendor-supplied default state merely with:
 
@@ -59,7 +59,7 @@ Many usage examples are provided via the source code documentation.  Refer to th
 
 ## Reference
 
-This module is extensively documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings).  Install support for and run the `puppet strings` command to access the navigable documentation.
+This module is extensively documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings), which is pre-generated in [docs](docs/index.html).
 
 ## Limitations
 
