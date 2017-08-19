@@ -3,7 +3,7 @@
   "name": "wwkimball-dovecot",
   "version": "0.1.0",
   "summary": "Manages dovecot and its plugins",
-  "license": "APLv2",
+  "license": "Apache-2.0",
   "project_page": "https://github.com/wwkimball/wwkimball-dovecot",
   "source": "https://github.com/wwkimball/wwkimball-dovecot.git",
   "issues_url": "https://github.com/wwkimball/wwkimball-dovecot/issues",
