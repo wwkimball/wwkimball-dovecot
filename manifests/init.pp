@@ -48,6 +48,7 @@
 #  &nbsp;&nbsp;&nbsp; - SIMPLE_VALUE_N<br>
 #  &nbsp; SECTION_NAME:<br>
 #  &nbsp;&nbsp;&nbsp; Any set of SECTION_KEY, REPEATING_KEY, and nested SECTION_NAME<br>
+#  &nbsp; ...<br>
 #  You can wholly remove any existing key and its entire value using the
 #  knock-out prefix, `config_hash_key_knockout_prefix`, even if you don't
 #  specify a lookup_options:dovecot::master_config:merge:knockout_prefix.  The
