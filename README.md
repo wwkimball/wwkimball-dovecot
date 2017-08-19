@@ -1,8 +1,10 @@
 # dovecot
 
+[![Build Status](https://travis-ci.org/wwkimball/wwkimball-dovecot.svg?branch=master)](https://travis-ci.org/wwkimball/wwkimball-dovecot) [![Version](https://img.shields.io/puppetforge/v/wwkimball/dovecot.svg)](https://forge.puppet.com/wwkimball/dovecot)
+
 ### Foreword
 
-The author of this module has long promoted a line of thinking that builds off of **Infrastructure As Code** into **Infrastructure As Data**.  With Hiera and modules like this, you can express your entire enterprise infrastructure purely as data without any more code for you to write or manage (not even antiquated roles/profiles).  As such, all examples in this document and the module's in-file documentation are presented strictly as YAML.
+The author of this module has long promoted a line of thinking that builds off of **Infrastructure As Code** into **Infrastructure As Data**.  With Hiera and modules like this, you can express your entire enterprise infrastructure purely as data without any more code for you to write or manage (not even antiquated roles/profiles when you use Hiera as your external node classifier and Facter for role assignments).  As such, all examples in this document and the module's in-file documentation are presented strictly as YAML.
 
 #### Table of Contents
 
@@ -59,7 +61,7 @@ Many usage examples are provided via the source code documentation.  Refer to th
 
 ## Reference
 
-This module is extensively documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings), which is pre-generated at [GitHub Pages for this project](https://wwkimball.github.io/wwkimball-dovecot/docs/puppet_classes/dovecot.html).
+This module is extensively documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings).  Pre-generated, web-accessible reference documentation can be found at [GitHub Pages for this project](https://wwkimball.github.io/wwkimball-dovecot/docs/puppet_classes/dovecot.html).
 
 ## Limitations
 
@@ -67,4 +69,4 @@ Please refer to the *operatingsystem_support* section of [metadata.json](metadat
 
 ## Development
 
-This module was written so generically that there really shouldn't be any need to change any of the Puppet code.  However, there is abundant opportunity to add more default Hiera data for operating systems that I simply don't bother with.  Should you find yourself interested in adding support for your favorite operating system -- and the existing defaults specifically do not cover it -- please feel free to open a Pull Request that adds the missing data.
+Please refer to [CONTRIBUTING](CONTRIBUTING.md) to learn how to hack this module.

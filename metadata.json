@@ -1,10 +1,15 @@
 {
   "author": "William W. Kimball, Jr., MBA, MSIS",
+  "name": "wwkimball-dovecot",
+  "version": "0.1.0",
+  "summary": "Manages dovecot and its plugins",
+  "license": "APLv2",
+  "project_page": "https://github.com/wwkimball/wwkimball-dovecot",
+  "source": "https://github.com/wwkimball/wwkimball-dovecot.git",
+  "issues_url": "https://github.com/wwkimball/wwkimball-dovecot/issues",
   "dependencies": [
     { "name": "puppetlabs/stdlib", "version_requirement": "4.x" }
   ],
-  "license": "APLv2",
-  "name": "wwkimball-dovecot",
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -15,12 +20,8 @@
       "operatingsystemrelease": ["6", "7"]
     }
   ],
-  "project_page": "https://github.com/wwkimball/wwkimball-dovecot",
   "requirements": [
-    { "name": "puppet", "version_requirement": ">=5.0.0" }
+    { "name": "puppet", "version_requirement": ">= 5.0.0" }
   ],
-  "source": "https://github.com/wwkimball/wwkimball-dovecot.git",
-  "summary": "Manages dovecot and its plugins",
-  "tags": [ "dovecot", "hiera" ],
-  "version": "0.1.0"
+  "tags": [ "dovecot", "hiera" ]
 }
