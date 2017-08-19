@@ -59,7 +59,7 @@ Many usage examples are provided via the source code documentation.  Refer to th
 
 ## Reference
 
-This module is extensively documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings), which is pre-generated in [docs](docs/index.html).
+This module is extensively documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings), which is pre-generated at [GitHub Pages for this project](https://wwkimball.github.io/wwkimball-dovecot/docs/puppet_classes/dovecot.html).
 
 ## Limitations
 
