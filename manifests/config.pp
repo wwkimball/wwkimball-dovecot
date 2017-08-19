@@ -65,29 +65,23 @@ class dovecot::config {
       *            => $dovecot::config_file_path_attributes,
     }
     -> file { $conf_dot_d_path:
-      ensure       => directory,
-      *            => $dovecot::config_file_path_attributes,
+      ensure => directory,
+      *      => $dovecot::config_file_path_attributes,
     }
 
     # Manage dovecot.conf
-    file {
-      default:
-        ensure => file,
-        *      => $dovecot::config_file_attributes,;
-
-      "${dovecot::config_file_path}/dovecot.conf":
-        content => template("${module_name}/config-file.erb"),;
+    file { "${dovecot::config_file_path}/dovecot.conf":
+      ensure  => file,
+      content => template("${module_name}/config-file.erb"),
+      *       => $dovecot::config_file_attributes,
     }
 
     # Manage all auxilliary configuration files
     pick($dovecot::config_files, {}).each | String $file, Hash $config, | {
-      file {
-        default:
-          ensure => file,
-          *      => $dovecot::config_file_attributes,;
-
-        "${conf_dot_d_path}/${file}":
-          content => template("${module_name}/config-file.erb"),;
+      file { "${conf_dot_d_path}/${file}":
+        ensure  => file,
+        content => template("${module_name}/config-file.erb"),
+        *       => $dovecot::config_file_attributes,
       }
     }
   }
