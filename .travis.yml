@@ -12,6 +12,7 @@ before_install:
   - bundle -v
 script:
   - 'bundle exec rake $CHECK'
+  - 'bundle exec rake strings:generate'
 matrix:
   fast_finish: true
   include:
