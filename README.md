@@ -1,6 +1,6 @@
 # dovecot
 
-[![Build Status](https://travis-ci.org/wwkimball/wwkimball-dovecot.svg?branch=master)](https://travis-ci.org/wwkimball/wwkimball-dovecot) [![Version](https://img.shields.io/puppetforge/v/wwkimball/dovecot.svg)](https://forge.puppet.com/wwkimball/dovecot)
+[![Build Status](https://travis-ci.org/wwkimball/wwkimball-dovecot.svg?branch=master)](https://travis-ci.org/wwkimball/wwkimball-dovecot) [![Documentation Coverage](https://inch-ci.org/github/wwkimball/wwkimball-dovecot.svg?branch=master)](https://inch-ci.org/github/wwkimball/wwkimball-dovecot) [![Version](https://img.shields.io/puppetforge/v/wwkimball/dovecot.svg)](https://forge.puppet.com/wwkimball/dovecot)
 
 ### Foreword
 
