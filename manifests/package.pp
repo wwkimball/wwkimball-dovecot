@@ -51,8 +51,8 @@ class dovecot::package {
   }
 
   package { 'dovecot':
-    name   => $dovecot::package_name,
     ensure => $dovecot::package_ensure,
+    name   => $dovecot::package_name,
   }
 
   pick($dovecot::plugin_packages, {}).each | String $name, Hash $attrs | {

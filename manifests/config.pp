@@ -52,8 +52,8 @@ class dovecot::config {
   # leave the configuration behind.
   if 'purged' == $dovecot::package_ensure {
     file { $dovecot::config_file_path:
-      ensure  => absent,
-      force   => true,
+      ensure => absent,
+      force  => true,
     }
   } else {
     # Ensure the configuration directories exists
