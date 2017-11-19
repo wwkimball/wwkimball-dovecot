@@ -1,8 +1,11 @@
 ---
 sudo: false
 dist: trusty
+
 language: ruby
 cache: bundler
+bundler_args: --without system_tests
+
 before_install:
   - bundle -v
   - rm Gemfile.lock || true
@@ -10,37 +13,70 @@ before_install:
   - gem update bundler
   - gem --version
   - bundle -v
+
 script:
-  - 'bundle exec rake $CHECK'
+  - bundle exec rake $CHECK
 matrix:
   fast_finish: true
   include:
-    - rvm: 2.4.1
-      bundler_args: --without system_tests
-      env: PUPPET_GEM_VERSION="~> 5.0"
-      script:
-        - 'bundle exec rake $CHECK'
-        - 'bundle exec rake strings:generate'
+    # Check that the module performs for Puppet 4.9.x
     - rvm: 2.3.1
-      bundler_args: --without system_tests
-      env: PUPPET_GEM_VERSION="~> 4.9"
+      env: PUPPET_VERSION="~> 4.9" CHECK=spec
+
+    # Check for conflict markers, whitespace errors, and unwanted files
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0"
+      script:
+        - git diff --check
+        - bundle exec rake check:dot_underscore check:test_file check:git_ignore check:symlinks
+
+    # Check for syntax and linting errors
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK='validate lint rubocop syntax:hiera'
+
+    # Check that the module performs for Puppet 5.0.x
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=spec
+
+    # Generate the Puppet Strings documentation (YARD)
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=strings:generate PUBLISH_PAGES=true
+
+    # Build the deployment artifact
+    - rvm: 2.4.2
+      env: PUPPET_VERSION="~> 5.0" CHECK=build DEPLOY_TO_FORGE=yes
+
 branches:
   only:
     - master
-    - /^v\d/
+    - /^\d+\.\d+\.\d+$/
+
 notifications:
   email: false
+
 deploy:
-  - provider: puppetforge
-    user: wwkimball
-    password:
-      secure: "b+BnUaKYfP6TRHmQWfd63ROr4wxlRzQyzGfJt82PauYqGsYDRAfXpyfnhhuTRj5BqTuDT8PmRCTQKNnkrGJ4DAj0VPLtjuEcXuatjTQ1juSV24l3uPSG0l5WWUE3XQJB4R8FmbWUi/RVAXGQeqHmXIkohx8p5xXs16RgwxZB2e2ShdPbGDJwDuTePdkwNni5aBznhk/o0R4lu8+ezpgaHafD4brg0bSZ8obhZJfqTODQHD5lx2t0NM6hiigolSj5d/f0gN3ldzVFRiz7QO+H6o5GC+coDQib61u8vqi7Rs2ch3D8nrr64wKwG6zVvhjN/fAZdxAFVTwFAHcfB5s5s/hX16FvkhIMijK1ZPvjMO3keT/TlIYOn6G8cHDZMA7OAe7dgWuPXtm0vIm1ayHfjW8lSIftBrTJN+NGSIlTmDBLnHfuxh9IWgnx77rIzFi4ZvHqjptR5f9D/Jt/DkhKDiVtYIX1VoSEJj+UIHov0g04UVfctHPIhvDyyHQtRvaTu8BqevmkyAdelNxrtQSeue7LVFrMH8dqwFG5k5QIjL0ShvmQDz8rOvnlESpfsshN2SVYgkdhg8HCA3F4G/j35uUZkKQpynDYg9tQIn+Y2xX4awtiPX9xOC72fdLeeP9HRpPFAJwUorI5W7z6RB9mVNeNnpTEOCIbZyo1k71VnRM="
-    on:
-      tags: true
-      all_branches: true
-      condition: "$DEPLOY_TO_FORGE = yes"
   - provider: pages
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
+    local_dir: docs
     on:
       branch: master
+      condition: $PUBLISH_PAGES = true
+  - provider: puppetforge
+    skip_cleanup: true
+    user: wwkimball
+    password:
+      secure: "fes8KsRx6IEmmx1n00Q2gC9QgmCJwme11Xq9QXfZ+UsEpN4H6zLPCXtZqJIw6s+6\
+        WiqLy2AML0Fj8Coymag+u0DCh0kJCbLs7kChwFRoG5gSTzSIB4Z4WpnUiLAwnMwQbGEUTia\
+        yRdRBqrc7Rg+Moaa5QVy5CPfsZpBR9lHWvPkVMLpn3UiwSkL9LFRp9xqZFezaeLYTHxTnq6\
+        PTKM6ZlSnep92xzkAdK98mXMM7JtktctpAPCk4UPzFBY9rJaKVdoVQr+j7h710jdcrlL06j\
+        vMpQKK3z31PI9l50Wa9JGvdqouD+KNL/WaIxIZforBAroQ8PbP5wNAbKkYiws+KtrmdqvfE\
+        L7WSYdRrUOvvUBSJ2n9MwJakwLNmbw6iX/WOnStJp2+fcCjQGAgEk+mN3yoeF71F1HuMb89\
+        yqkvq9pYiG/SGAJbwaix94aEEBC06Do7hMeD8ua6RAYhmhlQXIUCoB+JvVJvGLvMtpxPQTq\
+        DXnNfdMGulKPt8BufNbcHO3fimND+R1svwabPAqDx91F91k49zqrlo7I0oZcHlAyNtxS8qt\
+        Bdbm2uldbotxfr+G9a3YjXkOySvxZr89tnoFppkQPvGJ6W6hj5OPxzKGBW0mIK0MH2UPX5i\
+        uK8OlKo0m0JuUnPotBMsAyNc0dW6NBgzE0Ulp9mASxzjIBtVihI="
+    on:
+      tags: true
+      all_branches: true
+      condition: $DEPLOY_TO_FORGE = yes

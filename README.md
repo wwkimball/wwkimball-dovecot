@@ -1,10 +1,16 @@
 # dovecot
 
-[![Build Status](https://travis-ci.org/wwkimball/wwkimball-dovecot.svg?branch=master)](https://travis-ci.org/wwkimball/wwkimball-dovecot) [![Documentation Coverage](https://inch-ci.org/github/wwkimball/wwkimball-dovecot.svg?branch=master)](https://inch-ci.org/github/wwkimball/wwkimball-dovecot) [![Version](https://img.shields.io/puppetforge/v/wwkimball/dovecot.svg)](https://forge.puppet.com/wwkimball/dovecot)
+[![Build Status](https://travis-ci.org/wwkimball/wwkimball-dovecot.svg?branch=master)](https://travis-ci.org/wwkimball/wwkimball-dovecot) [![Version](https://img.shields.io/puppetforge/v/wwkimball/dovecot.svg)](https://forge.puppet.com/wwkimball/dovecot)
 
 ### Foreword
 
-The author of this module has long promoted a line of thinking that builds off of **Infrastructure As Code** into **Infrastructure As Data**.  With Hiera and modules like this, you can express your entire enterprise infrastructure purely as data without any more code for you to write or manage (not even antiquated roles/profiles when you use Hiera as your external node classifier and Facter for role assignments).  As such, all examples in this document and the module's in-file documentation are presented strictly as YAML.
+The original author of this module has long promoted a line of thinking that
+builds off of **Infrastructure As Code** into **Infrastructure As Data**.  With
+Hiera and modules like this, end-users can simply import the code they need and
+then fully express their entire enterprise infrastructure purely as data without
+any more code to write or support (not even antiquated roles/profiles).  As
+such, all examples in this document and the module's in-file documentation are
+presented strictly as YAML.
 
 #### Table of Contents
 
@@ -20,7 +26,7 @@ The author of this module has long promoted a line of thinking that builds off o
 
 ## Description
 
-This module was written from scratch, specifically for Puppet 5 and Hiera 5 to fully manage dovecot; nothing more and nothing less.  No assumptions are made as to what you intend to do with dovecot other than install or uninstall it and its plugins, configure it or delete its configuration files, and -- when not ignoring it -- keep its service running or not running.
+This module was written from scratch, specifically for Puppet 5 and Hiera 5 to fully manage dovecot; nothing more and nothing less.  No assumptions are made as to what you intend to do with dovecot other than enjoy full control over it via Hiera in every respect.
 
 Here, "fully manage" means this Puppet module:
 
@@ -61,11 +67,11 @@ Many usage examples are provided via the source code documentation.  Refer to th
 
 ## Reference
 
-This module is extensively documented via [Puppet Strings](https://github.com/puppetlabs/puppet-strings).  Pre-generated, web-accessible reference documentation can be found at [GitHub Pages for this project](https://wwkimball.github.io/wwkimball-dovecot/docs/puppet_classes/dovecot.html).
+Pre-generated, web-accessible reference documentation -- with abundant **examples** -- can be found at [GitHub Pages for this project](https://wwkimball.github.io/wwkimball-dovecot/docs/puppet_classes/dovecot.html), generated via [Puppet Strings](https://github.com/puppetlabs/puppet-strings).  If you do not have access to this on-line documentation, please just run `bundle install && bundle exec rake strings:generate` from this module's top directory to have a local copy of the documentation generated for you in the [docs](docs/index.html) directory.
 
 ## Limitations
 
-Please refer to the *operatingsystem_support* section of [metadata.json](metadata.json) for OS compatibility.  This is not an exhaustive list.  You will very likely find that this module runs just fine on other operating system and version combinations, given the proper inputs.
+Please refer to the *operatingsystem_support* section of [metadata.json](metadata.json) for known, proven-in-production OS compatibility.  This is not an exhaustive list.  You will very likely find that this module runs just fine on other operating system and version combinations, given the proper inputs.  In fact, if you do, please report it back so the metadata can be updated!
 
 ## Development
 
