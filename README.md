@@ -1,6 +1,6 @@
 # dovecot
 
-[![Build Status](https://travis-ci.org/wwkimball/wwkimball-dovecot.svg?branch=master)](https://travis-ci.org/wwkimball/wwkimball-dovecot) [![Version](https://img.shields.io/puppetforge/v/wwkimball/dovecot.svg)](https://forge.puppet.com/wwkimball/dovecot)
+[![Build Status](https://travis-ci.org/wwkimball/wwkimball-dovecot.svg?branch=master)](https://travis-ci.org/wwkimball/wwkimball-dovecot) [![Version](https://img.shields.io/puppetforge/v/wwkimball/dovecot.svg)](https://forge.puppet.com/wwkimball/dovecot) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3bfb5fb2b84042cf972b468eb1418b80)](https://www.codacy.com/app/wwkimball/wwkimball-dovecot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wwkimball/wwkimball-dovecot&amp;utm_campaign=Badge_Grade) [![Coverage Status](https://coveralls.io/repos/github/wwkimball/wwkimball-dovecot/badge.svg?branch=master)](https://coveralls.io/github/wwkimball/wwkimball-dovecot?branch=master)
 
 ### Foreword
 
@@ -67,7 +67,7 @@ Many usage examples are provided via the source code documentation.  Refer to th
 
 ## Reference
 
-Pre-generated, web-accessible reference documentation -- with abundant **examples** -- can be found at [GitHub Pages for this project](https://wwkimball.github.io/wwkimball-dovecot/docs/puppet_classes/dovecot.html), generated via [Puppet Strings](https://github.com/puppetlabs/puppet-strings).  If you do not have access to this on-line documentation, please just run `bundle install && bundle exec rake strings:generate` from this module's top directory to have a local copy of the documentation generated for you in the [docs](docs/index.html) directory.
+Pre-generated, web-accessible reference documentation -- with abundant **examples** -- can be found at [GitHub Pages for this project](https://wwkimball.github.io/wwkimball-dovecot/puppet_classes/dovecot.html), generated via [Puppet Strings](https://github.com/puppetlabs/puppet-strings).  If you do not have access to this on-line documentation, please just run `bundle install && bundle exec rake strings:generate` from this module's top directory to have a local copy of the documentation generated for you in the [docs](docs/index.html) directory.
 
 ## Limitations
 
