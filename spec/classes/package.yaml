@@ -1,0 +1,163 @@
+---
+describe:
+  name: dovecot
+  context:
+    'package.pp':
+      tests:
+        have_package_resource_count: 1
+        contain_package:
+          dovecot:
+            with:
+              ensure: present
+            that_notifies: Service[dovecot]
+      variants:
+        'uninstall':
+          let:
+            params:
+              package_ensure: absent
+          tests:
+            contain_package:
+              dovecot: absent
+        'pinned package version':
+          let:
+            params:
+              package_ensure: 2.0.3-1.el7
+          tests:
+            contain_package:
+              dovecot: 2.0.3-1.el7
+        'custom package name':
+          let:
+            params:
+              package_name: dovecot-custom
+          tests:
+            contain_package:
+              dovecot:
+                with:
+                  ensure: present
+                  name: dovecot-custom
+    'package.pp plug-ins':
+      let:
+        params:
+          plugin_packages:
+            dovecot-plugina: {}
+            dovecot-pluginb: {}
+            dovecot-pluginc: {}
+      tests:
+        have_package_resource_count: 4
+        contain_package:
+          dovecot:
+            with:
+              ensure: present
+            that_notifies: Service[dovecot]
+          dovecot-plugina:
+            with:
+              ensure: present
+            that_notifies: Service[dovecot]
+          dovecot-pluginb:
+            with:
+              ensure: present
+            that_notifies: Service[dovecot]
+          dovecot-pluginc:
+            with:
+              ensure: present
+            that_notifies: Service[dovecot]
+      variants:
+        'selective uninstall':
+          let:
+            params:
+              plugin_packages:
+                dovecot-plugina:
+                  ensure: absent
+          tests:
+            contain_package:
+              dovecot:
+                with:
+                  ensure: present
+                that_notifies: Service[dovecot]
+              dovecot-plugina:
+                with:
+                  ensure: absent
+                that_notifies: Service[dovecot]
+              dovecot-pluginb:
+                with:
+                  ensure: present
+                that_notifies: Service[dovecot]
+              dovecot-pluginc:
+                with:
+                  ensure: present
+                that_notifies: Service[dovecot]
+        'pinned plugin versions':
+          let:
+            params:
+              plugin_packages:
+                dovecot-plugina:
+                  ensure: 1.1.0-1.el7
+                dovecot-pluginb:
+                  ensure: 2.0.0-2.el7
+                dovecot-pluginc:
+                  ensure: 3.2.1-1.el7
+          tests:
+            contain_package:
+              dovecot: present
+              dovecot-plugina:
+                with:
+                  ensure: 1.1.0-1.el7
+                that_notifies: Service[dovecot]
+              dovecot-pluginb:
+                with:
+                  ensure: 2.0.0-2.el7
+                that_notifies: Service[dovecot]
+              dovecot-pluginc:
+                with:
+                  ensure: 3.2.1-1.el7
+                that_notifies: Service[dovecot]
+    'package.pp purge with plug-ins':
+      let:
+        params:
+          package_ensure: purged
+          plugin_packages:
+            dovecot-plugina: {}
+            dovecot-pluginb: {}
+            dovecot-pluginc: {}
+      tests:
+        have_package_resource_count: 4
+        contain_package:
+          dovecot:
+            with:
+              ensure: purged
+          dovecot-plugina:
+            with:
+              ensure: purged
+          dovecot-pluginb:
+            with:
+              ensure: purged
+          dovecot-pluginc:
+            with:
+              ensure: purged
+    'package.pp negative tests':
+      variants:
+        'bad package_ensure':
+          let:
+            params:
+              package_ensure: 2.10
+          tests:
+            compile:
+              and_raise_error: !ruby/regexp /parameter 'package_ensure' expects a String value, got Float/
+        'bad package_name':
+          variants:
+            'value too short':
+              let:
+                params:
+                  package_name: a
+              tests:
+                compile:
+                  and_raise_error: !ruby/regexp /parameter 'package_name' expects a String\[\d+(, default)?\] value, got String/
+            'wrong data type':
+              let:
+                params:
+                  package_name: false
+              tests:
+                compile:
+                  and_raise_error: !ruby/regexp /parameter 'package_name' expects a String value, got Boolean/
+
+# vim: syntax=yaml:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai

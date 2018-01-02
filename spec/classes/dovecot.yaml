@@ -1,0 +1,19 @@
+---
+describe:
+  name: dovecot
+  context:
+    'init.pp':
+      tests:
+        compile:
+          with_all_deps: nil
+        contain_class:
+          dovecot: {}
+          dovecot::package:
+            that_comes_before: Class[dovecot::config]
+          dovecot::config:
+            that_requires: Class[dovecot::package]
+            that_notifies: Class[dovecot::service]
+          dovecot::service:
+            that_subscribes_to: Class[dovecot::config]
+
+# vim: syntax=yaml:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai
