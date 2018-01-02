@@ -1,0 +1,379 @@
+---
+defaultDirectoryPermissions: &defaultDirectoryPermissions
+  owner: root
+  group: root
+  mode: '0755'
+
+defaultDirectoryAttributes: &defaultDirectoryAttributes
+  <<: *defaultDirectoryPermissions
+  ensure: directory
+
+defaultFilePermissions: &defaultFilePermissions
+  owner: root
+  group: root
+  mode: '0644'
+
+defaultFileAttributes: &defaultFileAttributes
+  <<: *defaultFilePermissions
+  ensure: file
+
+defaultMasterConfig: &defaultMasterConfig
+  dict: {}
+  '!include': 'conf.d/*.conf'
+  '!include_try': local.conf
+
+defaultConfigFiles: &defaultConfigFiles
+  10-auth.conf:
+    auth_mechanisms: plain
+    '!include': auth-system.conf.ext
+
+  10-director.conf:
+    'service director':
+      'unix_listener login/director': {}
+      'fifo_listener login/proxy-notify': {}
+      'unix_listener director-userdb': {}
+      inet_listener: {}
+    'service imap-login': {}
+    'service pop3-login': {}
+    'protocol lmtp': {}
+
+  10-logging.conf:
+    plugin: {}
+
+  10-mail.conf:
+    'namespace inbox':
+      inbox: 'yes'
+    first_valid_uid: 1000
+    mbox_write_locks: fcntl
+
+  10-master.conf:
+    'service imap-login':
+      'inet_listener imap': {}
+      'inet_listener imaps': {}
+    'service pop3-login':
+      'inet_listener pop3': {}
+      'inet_listener pop3s': {}
+    'service lmtp':
+      'unix_listener lmtp': {}
+    'service imap': {}
+    'service pop3': {}
+    'service auth':
+      'unix_listener auth-userdb': {}
+    'service auth-worker': {}
+    'service dict':
+      'unix_listener dict': {}
+
+  10-ssl.conf:
+    ssl: required
+    ssl_cert: </etc/pki/dovecot/certs/dovecot.pem
+    ssl_key: </etc/pki/dovecot/private/dovecot.pem
+
+  15-lda.conf:
+    'protocol lda': {}
+
+  15-mailboxes.conf:
+    'namespace inbox':
+      'mailbox Drafts':
+        special_use: \Drafts
+      'mailbox Junk':
+        special_use: \Junk
+      'mailbox Trash':
+        special_use: \Trash
+      'mailbox Sent':
+        special_use: \Sent
+      'mailbox "Sent Messages"':
+        special_use: \Sent
+
+  20-imap.conf:
+    'protocol imap': {}
+
+  20-lmtp.conf:
+    'protocol lmtp': {}
+
+  20-pop3.conf:
+    'protocol pop3': {}
+
+  90-acl.conf:
+    plugin:
+      - {}
+      - {}
+
+  90-plugin.conf:
+    plugin: {}
+
+  90-quota.conf:
+    plugin:
+      - {}
+      - {}
+      - {}
+      - {}
+
+  auth-checkpassword.conf.ext:
+    passdb:
+      driver: checkpassword
+      args: /usr/bin/checkpassword
+    userdb:
+      driver: prefetch
+
+  auth-deny.conf.ext:
+    passdb:
+      driver: passwd-file
+      deny: 'yes'
+      args: "%{lookup('dovecot::config_file_path')}/deny-users"
+
+  auth-dict.conf.ext:
+    passdb:
+      driver: dict
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-dict-auth.conf.ext"
+    userdb:
+      driver: dict
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-dict-auth.conf.ext"
+
+  auth-ldap.conf.ext:
+    passdb:
+      driver: ldap
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-ldap.conf.ext"
+    userdb:
+      driver: ldap
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-ldap.conf.ext"
+
+  auth-master.conf.ext:
+    passdb:
+      driver: passwd-file
+      master: 'yes'
+      args: "%{lookup('dovecot::config_file_path')}/master-users"
+      pass: 'yes'
+
+  auth-passwdfile.conf.ext:
+    passdb:
+      driver: passwd-file
+      args: "scheme=CRYPT username_format=%u %{lookup('dovecot::config_file_path')}/users"
+    userdb:
+      driver: passwd-file
+      args: "username_format=%u %{lookup('dovecot::config_file_path')}/users"
+
+  auth-sql.conf.ext:
+    passdb:
+      driver: sql
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-sql.conf.ext"
+    userdb:
+      driver: sql
+      args: "%{lookup('dovecot::config_file_path')}/dovecot-sql.conf.ext"
+
+  auth-static.conf.ext: {}
+
+  auth-system.conf.ext:
+    passdb:
+      driver: pam
+    userdb:
+      driver: passwd
+
+  auth-vpopmail.conf.ext:
+    passdb:
+      driver: vpopmail
+      args: ''
+    userdb:
+      driver: vpopmail
+      args: 'quota_template=quota_rule=*:backend=%q'
+
+
+describe:
+  name: dovecot
+  context:
+    'config.pp':
+      variants:
+        'default config_file_path':
+          let:
+            params:
+              master_config:
+                <<: *defaultMasterConfig
+              config_files:
+                <<: *defaultConfigFiles
+          tests:
+            contain_file:
+              /etc/dovecot:
+                with:
+                  <<: *defaultDirectoryAttributes
+                  purge: true
+                  recurse: true
+                  recurselimit: 2
+              /etc/dovecot/conf.d:
+                with:
+                  <<: *defaultDirectoryAttributes
+              /etc/dovecot/dovecot.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^!include conf\.d\/\*\.conf$/
+                  - !ruby/regexp /^!include_try local\.conf$/
+              /etc/dovecot/conf.d/10-auth.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^!include auth-system\.conf\.ext$/
+              /etc/dovecot/conf.d/10-director.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^service director {$/
+                  - !ruby/regexp /^\s+fifo_listener login/proxy-notify {$/
+                  - !ruby/regexp /^service pop3-login {$/
+              /etc/dovecot/conf.d/10-logging.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^plugin {$/
+              /etc/dovecot/conf.d/10-mail.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^namespace inbox {$/
+                  - !ruby/regexp /^\s+inbox = yes$/
+                  - !ruby/regexp /^mbox_write_locks = fcntl$/
+              /etc/dovecot/conf.d/10-master.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^service imap-login {$/
+                  - !ruby/regexp /^\s+inet_listener imaps {$/
+                  - !ruby/regexp /^service auth-worker {$/
+              /etc/dovecot/conf.d/10-ssl.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^ssl = required$/
+                  - !ruby/regexp /^ssl_key = <\/etc\/pki\/dovecot\/private\/dovecot\.pem$/
+              /etc/dovecot/conf.d/15-lda.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^protocol lda {$/
+              /etc/dovecot/conf.d/15-mailboxes.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^namespace inbox {$/
+                  - !ruby/regexp /^\s+mailbox Drafts {$/
+                  - !ruby/regexp /^\s+special_use = \\Sent$/
+              /etc/dovecot/conf.d/20-imap.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^protocol imap {$/
+              /etc/dovecot/conf.d/20-lmtp.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^protocol lmtp {$/
+              /etc/dovecot/conf.d/20-pop3.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^protocol pop3 {$/
+              /etc/dovecot/conf.d/90-acl.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^plugin {$/
+              /etc/dovecot/conf.d/90-plugin.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^plugin {$/
+              /etc/dovecot/conf.d/90-quota.conf:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^plugin {$/
+              /etc/dovecot/conf.d/auth-checkpassword.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+args = \/usr\/bin\/checkpassword$/
+                  - !ruby/regexp /^\s+driver = prefetch$/
+              /etc/dovecot/conf.d/auth-deny.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+deny = yes$/
+              /etc/dovecot/conf.d/auth-dict.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+driver = dict$/
+              /etc/dovecot/conf.d/auth-ldap.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+driver = ldap$/
+              /etc/dovecot/conf.d/auth-master.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+driver = passwd-file$/
+                  - !ruby/regexp /^\s+pass = yes$/
+              /etc/dovecot/conf.d/auth-passwdfile.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+driver = passwd-file$/
+              /etc/dovecot/conf.d/auth-sql.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+driver = sql$/
+              /etc/dovecot/conf.d/auth-static.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+              /etc/dovecot/conf.d/auth-system.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+driver = pam$/
+              /etc/dovecot/conf.d/auth-vpopmail.conf.ext:
+                with:
+                  <<: *defaultFileAttributes
+                with_content:  # Random sampling of vendor default lines
+                  - !ruby/regexp /^passdb {$/
+                  - !ruby/regexp /^\s+driver = vpopmail$/
+
+          variants:
+            'change file ownership':
+              let:
+                params:
+                  config_file_path_attributes:
+                    <<: *defaultDirectoryPermissions
+                    owner: mail
+                    group: mail
+                  config_file_attributes:
+                    <<: *defaultFilePermissions
+                    owner: mail
+                    group: mail
+              tests:
+                contain_file:
+                  /etc/dovecot:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/dovecot.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/10-auth.conf:
+                    with:
+                      owner: mail
+                      group: mail
+
+# vim: syntax=yaml:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai

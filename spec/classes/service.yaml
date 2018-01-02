@@ -1,0 +1,53 @@
+---
+describe:
+  name: dovecot
+  context:
+    'service.pp':
+      variants:
+        'defaults':
+          tests:
+            have_service_resource_count: 1
+            contain_service:
+              dovecot:
+                with:
+                  name: dovecot
+                  ensure: running
+                  enable: true
+
+        'turn service off':
+          let:
+            params:
+              service_enable: false
+              service_ensure: stopped
+          tests:
+            have_service_resource_count: 1
+            contain_service:
+              dovecot:
+                with:
+                  name: dovecot
+                  ensure: stopped
+                  enable: false
+
+        'disable service management':
+          let:
+            params:
+              service_managed: false
+          tests:
+            have_service_resource_count: 0
+            '!contain_service':
+              dovecot: {}
+
+        'custom service name':
+          let:
+            params:
+              service_name: dovecot-custom
+          tests:
+            have_service_resource_count: 1
+            contain_service:
+              dovecot:
+                with:
+                  name: dovecot-custom
+                  ensure: running
+                  enable: true
+
+# vim: syntax=yaml:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai
