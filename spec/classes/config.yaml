@@ -375,5 +375,121 @@ describe:
                     with:
                       owner: mail
                       group: mail
+                  /etc/dovecot/conf.d/10-director.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/10-logging.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/10-mail.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/10-master.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/10-ssl.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/15-lda.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/15-mailboxes.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/20-imap.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/20-lmtp.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/20-pop3.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/90-acl.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/90-plugin.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/90-quota.conf:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-checkpassword.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-deny.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-dict.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-ldap.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-master.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-passwdfile.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-sql.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-static.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-system.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+                  /etc/dovecot/conf.d/auth-vpopmail.conf.ext:
+                    with:
+                      owner: mail
+                      group: mail
+
+        'delete all "soft" includes':
+          let:
+            params:
+              master_config:
+                '--!include_try': --
+          tests:
+            contain_file:
+              /etc/dovecot/dovecot.conf:
+                without_content:
+                  - !ruby/regexp /^!include_try .*$/
+
+        'log auth failures and causes':
+          let:
+            params:
+              config_files:
+                10-logging.conf:
+                  auth_verbose: 'yes' 
+          tests:
+            contain_file:
+              /etc/dovecot/conf.d/10-logging.conf:
+                with_content:
+                  - !ruby/regexp /^auth_verbose = yes*$/
+
 
 # vim: syntax=yaml:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai
